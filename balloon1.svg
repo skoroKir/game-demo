@@ -1,0 +1,20 @@
+
+            <svg width="200" height="300" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Balloon -->
+            <ellipse cx="100" cy="100" rx="80" ry="100" fill="#FF6F61" stroke="#B22222" stroke-width="4"/>
+            
+            <!-- Stripes -->
+            <path d="M100 0 Q130 50 120 150" stroke="white" stroke-width="8" fill="none"/>
+            <path d="M100 0 Q70 50 80 150" stroke="white" stroke-width="8" fill="none"/>
+            
+            <!-- Basket -->
+            <rect x="75" y="230" width="50" height="40" fill="#8B5A2B" stroke="#654321" stroke-width="3"/>
+            
+            <!-- Ropes -->
+            <line x1="80" y1="190" x2="80" y2="230" stroke="#654321" stroke-width="3"/>
+            <line x1="120" y1="190" x2="120" y2="230" stroke="#654321" stroke-width="3"/>
+            
+            <!-- Highlights -->
+            <circle cx="120" cy="60" r="10" fill="white" opacity="0.3"/>
+        </svg>
+        
