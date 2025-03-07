@@ -15,8 +15,8 @@ let gameStarted; // Boolean
 let balloonX;
 let balloonY;
 
-let verticalVelocity; // Current vertical velocity of the balloon
-let horizontalVelocity; // Current horizontal velocity of the balloon
+let verticalVelocity; // Current vertical speed of the balloon
+let horizontalVelocity; // Current horizontal balloon speed
 
 let fuel; // Percentage of fuel left
 let heating; // Boolean: Is the mouse down or not?
@@ -29,15 +29,17 @@ const mainAreaWidth = 400;
 const mainAreaHeight = 375;
 let horizontalPadding = (window.innerWidth - mainAreaWidth) / 2;
 let verticalPadding = (window.innerHeight - mainAreaHeight) / 2;
-
-const hill1BaseHeight = 80;
-const hill1Speed = 0.2;
-const hill1Amplitude = 10;
+//Distant hills
+const hill1BaseHeight = 75;
+const hill1Speed = 0.3;
+const hill1Amplitude = 15;
 const hill1Stretch = 1;
+//mid distance hills
 const hill2BaseHeight = 50;
 const hill2Speed = 0.2;
 const hill2Amplitude = 15;
 const hill2Stretch = 0.5;
+//
 const hill3BaseHeight = 15;
 const hill3Speed = 1;
 const hill3Amplitude = 10;
