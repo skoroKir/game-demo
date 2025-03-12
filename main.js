@@ -39,20 +39,21 @@ const hill2BaseHeight = 50;
 const hill2Speed = 0.2;
 const hill2Amplitude = 15;
 const hill2Stretch = 0.5;
-//
+//grass
 const hill3BaseHeight = 15;
 const hill3Speed = 1;
 const hill3Amplitude = 10;
 const hill3Stretch = 0.2;
 
+//setting canvas for drawing
 const canvas = document.getElementById("game");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const ctx = canvas.getContext("2d");
 
-const introductionElement = document.getElementById("introduction");
-const restartButton = document.getElementById("restart");
+const introductionElement = document.getElementById("introduction");//intro test
+const restartButton = document.getElementById("restart");//resturt button
 
 // Add a custom sin function that takes degrees instead of radians
 Math.sinus = function (degree) {
@@ -145,8 +146,8 @@ window.addEventListener("mousedown", function () {
   heating = true;
 
   if (!gameStarted) {
-    introductionElement.style.opacity = 0;
-    gameStarted = true;
+    introductionElement.style.opacity = 0; // text fades away
+    gameStarted = true;//game starts here
     window.requestAnimationFrame(animate);
   }
 });
@@ -167,15 +168,15 @@ window.addEventListener("resize", function () {
 function animate() {
   if (!gameStarted) return;
 
-  const velocityChangeWhileHeating = 0.2;
-  const velocityChangeWhileCooling = 0.2;
+  const velocityChangeWhileHeating = 0.09;
+  const velocityChangeWhileCooling = 0.05;
 
   if (heating && fuel > 0) {
-    if (verticalVelocity > -8) {
+    if (verticalVelocity > -3) {
       // Limit maximum rising spead
       verticalVelocity -= velocityChangeWhileHeating;
     }
-    fuel -= 0.002 * -balloonY;
+    fuel -= 0.001 * -balloonY;
   } else if (verticalVelocity < 5) {
     // Limit maximum descending spead
     verticalVelocity += velocityChangeWhileCooling;
