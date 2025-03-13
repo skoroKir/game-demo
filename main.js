@@ -1,14 +1,3 @@
-/*
-
-
-HTML Canvas tutorial walking through the source code of this game: 
-
-https://youtu.be/Ymbv6m3EuNw
-
-Follow me on Twitter for more: https://twitter.com/HunorBorbely
-
-*/
-
 // Game data
 let gameStarted; // Boolean
 
@@ -29,31 +18,31 @@ const mainAreaWidth = 400;
 const mainAreaHeight = 375;
 let horizontalPadding = (window.innerWidth - mainAreaWidth) / 2;
 let verticalPadding = (window.innerHeight - mainAreaHeight) / 2;
-//Distant hills
+// Distant hills
 const hill1BaseHeight = 75;
 const hill1Speed = 0.3;
 const hill1Amplitude = 15;
 const hill1Stretch = 1;
-//mid distance hills
+// Mid distance hills
 const hill2BaseHeight = 50;
 const hill2Speed = 0.2;
 const hill2Amplitude = 15;
 const hill2Stretch = 0.5;
-//grass
+// Grass
 const hill3BaseHeight = 15;
 const hill3Speed = 1;
 const hill3Amplitude = 10;
 const hill3Stretch = 0.2;
 
-//setting canvas for drawing
+// Setting canvas for drawing
 const canvas = document.getElementById("game");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const ctx = canvas.getContext("2d");
 
-const introductionElement = document.getElementById("introduction");//intro test
-const restartButton = document.getElementById("restart");//resturt button
+const introductionElement = document.getElementById("introduction"); // Intro text
+const restartButton = document.getElementById("restart"); // Restart button
 
 // Add a custom sin function that takes degrees instead of radians
 Math.sinus = function (degree) {
@@ -146,8 +135,8 @@ window.addEventListener("mousedown", function () {
   heating = true;
 
   if (!gameStarted) {
-    introductionElement.style.opacity = 0; // text fades away
-    gameStarted = true;//game starts here
+    introductionElement.style.opacity = 0; // Text fades away
+    gameStarted = true; // Game starts here
     window.requestAnimationFrame(animate);
   }
 });
@@ -164,6 +153,29 @@ window.addEventListener("resize", function () {
   draw();
 });
 
+// Dynamically create hill images from SVG images
+const hillImage1 = document.createElement("img");
+hillImage1.id = "hills1";
+hillImage1.src = "hill1.svg";
+hillImage1.style.display = "block";
+hillImage1.style.position = "absolute";
+hillImage1.style.bottom = "0";
+hillImage1.style.left = "0";
+hillImage1.style.width = "100%";
+hillImage1.style.height = "auto";
+document.body.appendChild(hillImage1);
+
+const hillImage2 = document.createElement("img");
+hillImage2.id = "hills2";
+hillImage2.src = "hill1.svg";
+hillImage2.style.display = "block";
+hillImage2.style.position = "absolute";
+hillImage2.style.bottom = "0";
+hillImage2.style.left = "100%";
+hillImage2.style.width = "100%";
+hillImage2.style.height = "auto";
+document.body.appendChild(hillImage2);
+
 // The main game loop
 function animate() {
   if (!gameStarted) return;
@@ -173,12 +185,12 @@ function animate() {
 
   if (heating && fuel > 0) {
     if (verticalVelocity > -3) {
-      // Limit maximum rising spead
+      // Limit maximum rising speed
       verticalVelocity -= velocityChangeWhileHeating;
     }
     fuel -= 0.001 * -balloonY;
   } else if (verticalVelocity < 5) {
-    // Limit maximum descending spead
+    // Limit maximum descending speed
     verticalVelocity += velocityChangeWhileCooling;
   }
 
@@ -200,6 +212,22 @@ function animate() {
     backgroundTrees.shift(); // Remove first item in array
     generateBackgroundTree(); // Add a new item to the array
   }
+
+  // Move the hill1.svg images
+  const hillWidth = hillImage1.width; // Assuming both images have the same width
+
+  let hill1X = -balloonX * hill3Speed % hillWidth;
+  let hill2X = hill1X + hillWidth;
+
+  if (hill1X < -hillWidth) {
+    hill1X += hillWidth;
+  }
+  if (hill2X < -hillWidth) {
+    hill2X += hillWidth;
+  }
+
+  hillImage1.style.left = `${hill1X}px`;
+  hillImage2.style.left = `${hill2X}px`;
 
   draw(); // Re-render the whole scene
 
@@ -279,24 +307,6 @@ function drawTrees() {
     ctx.restore();
   });
 }
-
-//function drawBalloon() {
-  // ctx.save();
-
-  // ctx.translate(balloonX, balloonY);
-
-  // // Balloon
-  // ctx.fillStyle = "#D62828";
-  // ctx.beginPath();
-  // ctx.moveTo(-30, -60);
-  // ctx.quadraticCurveTo(-80, -120, -80, -160);
-  // ctx.arc(0, -160, 80, Math.PI, 0, false);
-  // ctx.quadraticCurveTo(80, -120, 30, -60);
-  // ctx.closePath();
-  // ctx.fill();
-
-  // ctx.restore();
-//}
 
 function drawBalloon() {
   let balloonImg = document.getElementById("balloonImg");
