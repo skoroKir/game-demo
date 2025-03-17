@@ -29,10 +29,10 @@ const hill2Speed = 0.2;
 const hill2Amplitude = 15;
 const hill2Stretch = 0.5;
 // Grass
-const hill3BaseHeight = 0;
-const hill3Speed = 1;
-const hill3Amplitude = 0;
-const hill3Stretch = 0;
+const grassBaseHeight = 0;
+const grassSpeed = 1;
+const grassAmplitude = 0;
+const grassStretch = 0;
 
 // Setting canvas for drawing
 const canvas = document.getElementById("game");
@@ -151,7 +151,7 @@ window.addEventListener("mouseup", function () {
 
 // Dynamically create grass images from SVG
 const grassImage = document.createElement("img");
-let hillImage2; // Define hillImage2
+let grassImage2; // Define grassImage2
 grassImage.id = "hills1";
 grassImage.src = "hill1.svg";
 grassImage.style.display = "block";
@@ -170,30 +170,30 @@ grassImage.onload = function() {
 
 function repeatGrassImage() {
   const grassWidth = grassImage.width;
-  hillImage2 = grassImage.cloneNode();
-  hillImage2.id = "hills2";
-  hillImage2.style.left = `${grassWidth}px`;
-  document.body.appendChild(hillImage2);
+  grassImage2 = grassImage.cloneNode();
+  grassImage2.id = "grass2";
+  grassImage2.style.left = `${grassWidth}px`;
+  document.body.appendChild(grassImage2);
 
   window.addEventListener("resize", function () {
-    hillImage2.style.left = `${grassWidth}px`;
+    grassImage2.style.left = `${grassWidth}px`;
   });
 
-  function updateHillPosition() {
-    const hill1X = parseFloat(grassImage.style.left);
-    const hill2X = parseFloat(hillImage2.style.left);
+  function updateGrassPosition() {
+    const grass1X = parseFloat(grassImage.style.left);
+    const grass2X = parseFloat(grassImage2.style.left);
 
-    if (hill1X <= -grassWidth) {
-      grassImage.style.left = `${hill2X + grassWidth}px`;
+    if (grass1X <= -grassWidth) {
+      grassImage.style.left = `${grass2X + grassWidth}px`;
     }
-    if (hill2X <= -grassWidth) {
-      hillImage2.style.left = `${hill1X + grassWidth}px`;
+    if (grass2X <= -grassWidth) {
+      grassImage2.style.left = `${grass1X + grassWidth}px`;
     }
 
-    requestAnimationFrame(updateHillPosition);
+    requestAnimationFrame(updateGrassPosition);
   }
 
-  updateHillPosition();
+  updateGrassPosition();
 }
 
 window.addEventListener("resize", function () {
@@ -242,21 +242,21 @@ function animate() {
     generateBackgroundTree(); // Add a new item to the array
   }
 
-  // Move the hill1.svg images
+  // Move the grass images
   const grassWidth = grassImage.width; // Assuming both images have the same width
 
-  let hill1X = -balloonX * hill3Speed % grassWidth;
-  let hill2X = hill1X + grassWidth;
+  let grass1X = -balloonX * grassSpeed % grassWidth;
+  let grass2X = grass1X + grassWidth;
 
-  if (hill1X < -grassWidth) {
-    hill1X += grassWidth;
+  if (grass1X < -grassWidth) {
+    grass1X += grassWidth;
   }
-  if (hill2X < -grassWidth) {
-    hill2X += grassWidth;
+  if (grass2X < -grassWidth) {
+    grass2X += grassWidth;
   }
 
-  grassImage.style.left = `${hill1X}px`;
-  hillImage2.style.left = `${hill2X}px`;
+  grassImage.style.left = `${grass1X}px`;
+  grassImage2.style.left = `${grass2X}px`;
 
   draw(); // Re-render the whole scene
 
@@ -349,9 +349,10 @@ function drawBalloon() {
     document.body.appendChild(balloonImg);
   }
 
-  // Update position
+  // Update initial position
   balloonImg.style.position = "absolute";
-  balloonImg.style.left = `${balloonX + window.innerWidth / 2.2}px`;
+  const limitedBalloonX = Math.min(Math.max(balloonX, 0), 120);
+  balloonImg.style.left = `${limitedBalloonX + window.innerWidth / 2.2}px`;
   balloonImg.style.top = `${balloonY + window.innerHeight / 2}px`;
 }
 
@@ -397,10 +398,10 @@ function drawBackgroundHills() {
   );
 
   drawHill(
-    hill3BaseHeight,
-    hill3Speed,
-    hill3Amplitude,
-    hill3Stretch,
+    grassBaseHeight,
+    grassSpeed,
+    grassAmplitude,
+    grassStretch,
     "#0C6A37"
   );
 
@@ -465,6 +466,8 @@ function getTreeY(x, baseHeight, amplitude) {
   const sineBaseY = -baseHeight;
   return Math.sinus(x) * amplitude + sineBaseY;
 }
+
+//console.log(balloonY)
 
 function hitDetection() {
   const cartBottomLeft = { x: balloonX - 30, y: balloonY };
