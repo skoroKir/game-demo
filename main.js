@@ -29,10 +29,10 @@ const hill2Speed = 0.2;
 const hill2Amplitude = 15;
 const hill2Stretch = 0.5;
 // Grass
-const hill3BaseHeight = 15;
+const hill3BaseHeight = 0;
 const hill3Speed = 1;
-const hill3Amplitude = 10;
-const hill3Stretch = 0.2;
+const hill3Amplitude = 0;
+const hill3Stretch = 0;
 
 // Setting canvas for drawing
 const canvas = document.getElementById("game");
@@ -72,8 +72,10 @@ function resetGame() {
   backgroundTrees = [];
   for (let i = 1; i < window.innerWidth / 30; i++) generateBackgroundTree();
 
+
   draw();
 }
+
 
 function generateBackgroundTree() {
   const minimumGap = 30;
@@ -145,36 +147,63 @@ window.addEventListener("mouseup", function () {
   heating = false;
 });
 
+
+
+// Dynamically create grass images from SVG
+const grassImage = document.createElement("img");
+let hillImage2; // Define hillImage2
+grassImage.id = "hills1";
+grassImage.src = "hill1.svg";
+grassImage.style.display = "block";
+grassImage.style.position = "absolute";
+grassImage.style.bottom = "auto"; // Ensure it's not stuck to the bottom
+grassImage.style.left = "0";
+grassImage.style.width = "100%";
+grassImage.style.height = "auto";
+grassImage.style.transformOrigin = "top"; // Set anchor point to the top
+document.body.appendChild(grassImage);
+
+grassImage.onload = function() {
+  grassImage.style.top = `${(window.innerHeight + 380) / 2 - grassImage.height / 2}px`; // Set initial position of the hills1 element
+  repeatGrassImage();
+};
+
+function repeatGrassImage() {
+  const grassWidth = grassImage.width;
+  hillImage2 = grassImage.cloneNode();
+  hillImage2.id = "hills2";
+  hillImage2.style.left = `${grassWidth}px`;
+  document.body.appendChild(hillImage2);
+
+  window.addEventListener("resize", function () {
+    hillImage2.style.left = `${grassWidth}px`;
+  });
+
+  function updateHillPosition() {
+    const hill1X = parseFloat(grassImage.style.left);
+    const hill2X = parseFloat(hillImage2.style.left);
+
+    if (hill1X <= -grassWidth) {
+      grassImage.style.left = `${hill2X + grassWidth}px`;
+    }
+    if (hill2X <= -grassWidth) {
+      hillImage2.style.left = `${hill1X + grassWidth}px`;
+    }
+
+    requestAnimationFrame(updateHillPosition);
+  }
+
+  updateHillPosition();
+}
+
 window.addEventListener("resize", function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   horizontalPadding = (window.innerWidth - mainAreaWidth) / 2;
   verticalPadding = (window.innerHeight - mainAreaHeight) / 2;
+  grassImage.style.top = `${(window.innerHeight + 380) / 2 - grassImage.height / 2}px`; // Update position on resize
   draw();
 });
-
-// Dynamically create hill images from SVG images
-const hillImage1 = document.createElement("img");
-hillImage1.id = "hills1";
-hillImage1.src = "hill1.svg";
-hillImage1.style.display = "block";
-hillImage1.style.position = "absolute";
-hillImage1.style.bottom = "0";
-hillImage1.style.left = "0";
-hillImage1.style.width = "100%";
-hillImage1.style.height = "auto";
-document.body.appendChild(hillImage1);
-
-const hillImage2 = document.createElement("img");
-hillImage2.id = "hills2";
-hillImage2.src = "hill1.svg";
-hillImage2.style.display = "block";
-hillImage2.style.position = "absolute";
-hillImage2.style.bottom = "0";
-hillImage2.style.left = "100%";
-hillImage2.style.width = "100%";
-hillImage2.style.height = "auto";
-document.body.appendChild(hillImage2);
 
 // The main game loop
 function animate() {
@@ -214,19 +243,19 @@ function animate() {
   }
 
   // Move the hill1.svg images
-  const hillWidth = hillImage1.width; // Assuming both images have the same width
+  const grassWidth = grassImage.width; // Assuming both images have the same width
 
-  let hill1X = -balloonX * hill3Speed % hillWidth;
-  let hill2X = hill1X + hillWidth;
+  let hill1X = -balloonX * hill3Speed % grassWidth;
+  let hill2X = hill1X + grassWidth;
 
-  if (hill1X < -hillWidth) {
-    hill1X += hillWidth;
+  if (hill1X < -grassWidth) {
+    hill1X += grassWidth;
   }
-  if (hill2X < -hillWidth) {
-    hill2X += hillWidth;
+  if (hill2X < -grassWidth) {
+    hill2X += grassWidth;
   }
 
-  hillImage1.style.left = `${hill1X}px`;
+  grassImage.style.left = `${hill1X}px`;
   hillImage2.style.left = `${hill2X}px`;
 
   draw(); // Re-render the whole scene
@@ -372,7 +401,7 @@ function drawBackgroundHills() {
     hill3Speed,
     hill3Amplitude,
     hill3Stretch,
-    "#26532B"
+    "#0C6A37"
   );
 
   // Draw background trees
