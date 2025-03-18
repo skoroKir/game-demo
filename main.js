@@ -42,7 +42,7 @@ canvas.height = window.innerHeight;
 const ctx = canvas.getContext("2d");
 
 const introductionElement = document.getElementById("introduction"); // Intro text
-const restartButton = document.getElementById("restart"); // Restart button
+var restartButton = document.getElementById("restartBtn"); // Restart button
 
 // Add a custom sin function that takes degrees instead of radians
 Math.sinus = function (degree) {
@@ -72,10 +72,18 @@ function resetGame() {
   backgroundTrees = [];
   for (let i = 1; i < window.innerWidth / 30; i++) generateBackgroundTree();
 
-
   draw();
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+  var restartButton = document.getElementById("restartBtn"); // Restart button
+
+  restartButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    resetGame();
+    restartButton.style.display = "none";
+  });
+});
 
 function generateBackgroundTree() {
   const minimumGap = 30;
@@ -122,8 +130,6 @@ function generateTree() {
   trees.push({ x, h, r1, r2, r3, r4, r5, r6, r7, color });
 }
 
-resetGame();
-
 // If space was pressed restart the game
 window.addEventListener("keydown", function (event) {
   if (event.key == " ") {
@@ -147,12 +153,18 @@ window.addEventListener("mouseup", function () {
   heating = false;
 });
 
-
+window.addEventListener("resize", function () {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  horizontalPadding = (window.innerWidth - mainAreaWidth) / 2;
+  verticalPadding = (window.innerHeight - mainAreaHeight) / 2;
+  draw();
+});
 
 // Dynamically create grass images from SVG
 const grassImage = document.createElement("img");
 let grassImage2; // Define grassImage2
-grassImage.id = "hills1";
+grassImage.id = "grass1";
 grassImage.src = "hill1.svg";
 grassImage.style.display = "block";
 grassImage.style.position = "absolute";
@@ -161,12 +173,17 @@ grassImage.style.left = "0";
 grassImage.style.width = "100%";
 grassImage.style.height = "auto";
 grassImage.style.transformOrigin = "top"; // Set anchor point to the top
+grassImage.style.zIndex = "1"; // Ensure grass is behind the button
 document.body.appendChild(grassImage);
 
 grassImage.onload = function() {
-  grassImage.style.top = `${(window.innerHeight + 380) / 2 - grassImage.height / 2}px`; // Set initial position of the hills1 element
+  grassImage.style.top = `${(window.innerHeight + 380) / 2 - grassImage.height / 2}px`; // Set initial position of the grass1 element
   repeatGrassImage();
 };
+
+// Ensure the restart button is on top
+restartButton.style.position = "relative";
+restartButton.style.zIndex = "2";
 
 function repeatGrassImage() {
   const grassWidth = grassImage.width;
@@ -195,15 +212,6 @@ function repeatGrassImage() {
 
   updateGrassPosition();
 }
-
-window.addEventListener("resize", function () {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  horizontalPadding = (window.innerWidth - mainAreaWidth) / 2;
-  verticalPadding = (window.innerHeight - mainAreaHeight) / 2;
-  grassImage.style.top = `${(window.innerHeight + 380) / 2 - grassImage.height / 2}px`; // Update position on resize
-  draw();
-});
 
 // The main game loop
 function animate() {
@@ -294,12 +302,6 @@ function draw() {
   // Header is last because it's on top of everything else
   drawHeader();
 }
-
-restartButton.addEventListener("click", function (event) {
-  event.preventDefault();
-  resetGame();
-  restartButton.style.display = "none";
-});
 
 function drawCircle(cx, cy, radius) {
   ctx.beginPath();
@@ -467,8 +469,6 @@ function getTreeY(x, baseHeight, amplitude) {
   return Math.sinus(x) * amplitude + sineBaseY;
 }
 
-//console.log(balloonY)
-
 function hitDetection() {
   const cartBottomLeft = { x: balloonX - 30, y: balloonY };
   const cartBottomRight = { x: balloonX + 30, y: balloonY };
@@ -480,6 +480,8 @@ function hitDetection() {
     const treeTopLeft = { x: x - 20, y: -h - 35 };
     const treeTop = { x: x, y: -h - 45 };
     const treeTopRight = { x: x + 20, y: -h - 35 };
+
+    //console.log(cartBottomRight, treeTopLeft);
 
     if (getDistance(cartBottomLeft, treeBottomLeft) < r1) return true;
     if (getDistance(cartBottomRight, treeBottomLeft) < r1) return true;
